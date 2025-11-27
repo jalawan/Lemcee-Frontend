@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@plugin "daisyui"{
+  themes:luxury --default, cupcake,retro,aqua,cyberpunk,light,luxury;
+}

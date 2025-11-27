@@ -1,0 +1,162 @@
+.navbar {
+    /* background-color: #ebc958; */
+     position: absolute;          /* Sit on top of the image */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: transparent;
+  z-index: 30;
+
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: #2d5a4a;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #96dd98, #81C784);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d5a4a;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color:goldenrod;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+    
+}
+
+.navbar-link:hover {
+    color: #2d5a4a;
+    background-color: #a0bcf9;
+}
+
+.navbar-link.active {
+    color: #2d5a4a;
+}
+
+.navbar-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background-color: #ff7b54;
+    border-radius: 2px;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+}
+.BOOK-NOW-btn {
+    background-color: #111111;
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid #2d5a4a;
+}
+
+.BOOK-NOW-btn:hover {
+    background-color: #1e3d32;
+    border-color: #1e3d32;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45, 90, 74, 0.3);
+}
+
+.login-btn {
+    background-color: #6ee08c;
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid #2d5a4a;
+}
+
+.login-btn:hover {
+    background-color: #1e3d32;
+    border-color: #1e3d32;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45, 90, 74, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 0 1rem;
+    }
+
+    .navbar-menu {
+        gap: 1rem;
+    }
+
+    .navbar-link {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+
+    .brand-text {
+        font-size: 1.2rem;
+    }
+
+    .login-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-menu {
+        display: none;
+    }
+
+    .brand-text {
+        display: none;
+    }
+
+    .navbar-container {
+        justify-content: space-between;
+    }
+}
