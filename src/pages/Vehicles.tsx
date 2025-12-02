@@ -17,7 +17,7 @@ const Vehicles: React.FC = () => {
   const navigate = useNavigate();
 
   const { data: vehicles, error, isLoading } = VehicleApi.useGetAllvehicleQuery();
-  const [createBooking, { isLoading: isBookingLoading }] = BookingApi.useAddNewBookingMutation();
+  const [createBooking, { isLoading: isBookingLoading }] = BookingApi.useAddNewBookingStatusMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
@@ -74,7 +74,7 @@ const Vehicles: React.FC = () => {
         booking_date: new Date(pickupDate).toISOString(),
         return_date: returnDate ? new Date(returnDate).toISOString() :undefined,
         total_amount: totalPrice,
-        booking_status: "Pending",
+        booking_status: "paid",
       };
 
       const res = await createBooking(bookingPayload).unwrap();
@@ -129,7 +129,7 @@ const Vehicles: React.FC = () => {
               {/* Luxury price badge */}
               <div className="absolute ml-35 mt-15 px-4 py-1 rounded-full text-white
                 bg-gradient-to-r from-yellow-500 to-yellow-300 animate-pulse font-bold shadow-lg">
-                Ksh {vehicle.rental_rate.toLocaleString()}/day
+                Ksh {vehicle.rental_rate?.toLocaleString() ?? "N/A"}/day
               </div>
 
               <div className="p-6">
@@ -206,7 +206,7 @@ const Vehicles: React.FC = () => {
             {/* Total Price */}
             <div className="flex justify-between mb-4">
               <span>Total:</span>
-              <span className="font-bold text-green-700">Ksh {totalPrice.toLocaleString()}</span>
+              <span className="font-bold text-green-700">Ksh {totalPrice.toLocaleString() ?? "N/A"}</span>
             </div>
 
             <div className="modal-action">

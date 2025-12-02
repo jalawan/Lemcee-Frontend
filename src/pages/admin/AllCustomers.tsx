@@ -9,14 +9,14 @@ const AllCustomers: React.FC = () => {
      //RTK QUery Hook
     const { data: allCustomers, isLoading: customerIsLoading } = userApi.useGetAllUsersQuery()
     const [updateUserType, { isLoading: isUpdatingType }] = userApi.useUpdateUserTypeStatusMutation()
-    console.log("🚀 ~ AllMenuItems ~ allMenuItem:", allCustomers)
+    console.log("🚀 ~ AllVehicles ~ allVehicles:", allCustomers)
     return (
         <AdminDashboardLayout>
             <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
                     <Users className="text-blue-600" size={24} />
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Customer Management</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-800">User Management</h1>
             </div>
 
             {/* Placeholder content */}
@@ -31,7 +31,7 @@ const AllCustomers: React.FC = () => {
 
             {/* let have a table structure for customers */}
             <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">All Customers</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">All Users</h3>
             </div>
 
             {/* table structure */}
@@ -44,7 +44,7 @@ const AllCustomers: React.FC = () => {
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
-                            <th>Phone Number</th>
+                            <th>Contact_phone</th>
                             <th>Date Joined</th>
                             <th>User Type</th>
                             <th>Actions</th>
@@ -59,7 +59,7 @@ const AllCustomers: React.FC = () => {
                             </tr>
                         ) : !allCustomers || allCustomers.length === 0 ? (
                             <tr>
-                                <td colSpan={8} className="text-center py-6 text-gray-500">No customers found.</td>
+                                <td colSpan={8} className="text-center py-6 text-gray-500">No users found.</td>
                             </tr>
                         ) : (
                             allCustomers.map((cust, idx) => (
@@ -68,16 +68,16 @@ const AllCustomers: React.FC = () => {
                                     <td>{cust.first_name}</td>
                                     <td>{cust.last_name}</td>
                                     <td>{cust.email}</td>
-                                    <td>{cust.phone_number}</td>
+                                    <td>{cust.contact_phone}</td>
                                     <td>{new Date(cust.created_at).toLocaleDateString()}</td>
-                                    <td className="capitalize">{cust.user_type || cust.role || 'customer'}</td>
+                                    <td className="capitalize">{cust.role || cust.role || 'customer'}</td>
                                     <td>
                                         <button className="btn btn-sm btn-primary mr-2">View</button>
                                         <button
                                             className="btn btn-sm btn-warning mr-2"
                                             disabled={isUpdatingType}
                                             onClick={async () => {
-                                                const newType = (cust.user_type === 'admin') ? 'customer' : 'admin'
+                                                const newType = (cust.role === 'admin') ? 'customer' : 'admin'
                                                 try {
                                                     await updateUserType({ user_id: cust.user_id, user_type: newType }).unwrap()
                                                     toast.success(`User type updated to ${newType}`)

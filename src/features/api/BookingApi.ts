@@ -20,19 +20,53 @@ export const BookingApi = createApi({
         
         //Fetch all Bookings
        getAllBookings :builder.query<Bookings[],void >({
-        query:()=>'/Bookings',
+        query:()=>'/bookings',
         providesTags:['bookings'],
        }),
 
        //create booking
-      addNewBooking:builder.mutation<{ message:string},Partial<Omit<Bookings,'booking_id'>>>({
+      addNewBookingStatus:builder.mutation<{ message:string},Partial<Omit<Bookings,'booking_id'>>>({
         query:(newbooking)=>({
             url:'/bookings',
             method:'POST',
             body: newbooking,
         }),
         invalidatesTags:['bookings']
-       })
+       }),
+       //update order status
+        updateBooking:builder.mutation<{ message: string }, { booking_id: number, status:string }>({
+            query: ({ booking_id, ...updateBooking }) => ({
+                url: `/bookings/${booking_id}`,
+                method: 'PATCH',
+                body: updateBooking,
+            }),
+            invalidatesTags: ['bookings'],
+        }),
+        //delete order
+        deleteBooking: builder.mutation<{ message: string }, { booking_id: number }>({
+            query: ({ booking_id }) => ({
+                url: `/bookings/${booking_id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['bookings'],
+        }),
+        //fetch 5 latest orders
+        getLatestBookings: builder.query<Bookings[], void>({
+            query: () => '/bookings/latest',
+            providesTags: ['bookings'],
+        }),
+
+        //fetch all order for one customer using custome id
+        getAllBookingsByUserId: builder.query<Omit<Bookings[], 'user_email' | 'user_name'>,  number>({
+            query: (user_id) => `/bookings/user/${user_id}`,
+            providesTags: ['bookings']
+        }),
+
+        //get order by id
+        getBookingrById: builder.query<Bookings, {booking_id: number }>({
+            query: ({ booking_id }) => `/bookings/${booking_id}`,
+            providesTags: ['bookings'],
+        }),
 
     })
 })

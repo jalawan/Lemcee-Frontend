@@ -6,6 +6,9 @@ import { persistReducer, persistStore } from 'redux-persist';
 import { dashboardDataApi } from '../features/api/DashboardDataApi';
 import { userApi } from '../features/api/UserApi';
 import { VehicleApi } from '../features/api/VehicleApi';
+import {BookingApi}from '../features/api/BookingApi'
+import { PaymentsApi } from '../features/api/PaymentsApi';
+import SupportTicketApi from '../features/api/SupportTicketApi';
 
 
 
@@ -35,6 +38,9 @@ export const store = configureStore({
         [dashboardDataApi.reducerPath]: dashboardDataApi.reducer,
         [userApi.reducerPath]: userApi.reducer,
         [VehicleApi.reducerPath]:VehicleApi.reducer,
+        [BookingApi.reducerPath]:BookingApi.reducer,
+        [PaymentsApi.reducerPath]:PaymentsApi.reducer,
+        [SupportTicketApi.reducerPath]:SupportTicketApi.reducer,
 
         //add the auth slice reducer
         authSlice: persistedAuthReducer
@@ -44,7 +50,10 @@ export const store = configureStore({
             AuthApi.middleware,
             dashboardDataApi.middleware,
             userApi.middleware,
-            VehicleApi.middleware
+            VehicleApi.middleware,
+            BookingApi.middleware,
+            PaymentsApi.middleware,
+            SupportTicketApi.middleware
         ),
 })
 

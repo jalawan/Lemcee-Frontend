@@ -29,15 +29,15 @@ const VehicleSpecification: React.FC = () => {
   const { data: vehicle, isLoading, error } =
     VehicleApi.useGetvehicleByIdQuery(vehicle_id, { skip: !shouldFetch });
 
-  const handleBookingRedirect = () => {
-    if (!isAuthenticated) {
-      toast.error("Please login to continue");
-      navigate(`/login?redirect=/booking/${vehicle_id}`);
-      return;
-    }
+  // const handleBookingRedirect = () => {
+  //   if (!isAuthenticated) {
+  //     toast.error("Please login to continue");
+  //     navigate(`/login?redirect=/booking/${vehicle_id}`);
+  //     return;
+  //   }
 
-    navigate(`/booking/${vehicle_id}`);
-  };
+  //   navigate(`/booking/${vehicle_id}`);
+  // };
 
   // ✅ back button handler
   const handleBack = () => {

@@ -1,29 +1,22 @@
 import React from 'react'
 import DashboardLayout from '../../dashboardDesign/DashboardLayout'
-import { DollarSign, HardDriveDownload, Heart, ShoppingCart, Star, User } from 'lucide-react'
+import { DollarSign, HardDriveDownload, ShoppingCart, Star, User, WavesIcon } from 'lucide-react'
 import { Link } from 'react-router'
 //import type { FavoriteItems } from '../../types/Types';
 import { dashboardDataApi } from '../../features/api/DashboardDataApi';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
+import { type RecentBookings } from '../../types/Types';
 
-export interface FavoriteItems{
-    id:number;
-    name:string;
-    price:number;
-    image:string;
-    orders:number
-}
+// export interface FavoriteItems{
+//     id:number;
+//     name:string;
+//     price:number;
+//     image:string;
+//     orders:number
+// }
 
-interface RecentOrders{
-    id:number;
-    restaurant:string;
-    items:string;
-    amount:number;
-    status:string;
-    date:string;
-    rating:number;
-}
+
 
 const UserDashboard: React.FC = () => {
 
@@ -42,24 +35,18 @@ const UserDashboard: React.FC = () => {
     //     loyaltyPoints: 1250
     // }
 
-    const recentOrders: RecentOrders[] = [
+    const recentbookings: RecentBookings[] = [
         // { id: 1, restaurant: "Mathe's Eatery", items: "Grilled Chicken & Salad", amount: 28.99, status: "Delivered", date: "Nov 14, 2025", rating: 5 },
         // { id: 2, restaurant: "Mathe's Eatery", items: "Pasta Carbonara", amount: 24.50, status: "Delivered", date: "Nov 12, 2025", rating: 4 },
         // { id: 3, restaurant: "Mathe's Eatery", items: "Beef Burger Combo", amount: 15.99, status: "In Transit", date: "Nov 15, 2025", rating: 0 },
     ]
 
-    const favoriteItems: FavoriteItems[] = [
-        // { id: 1, name: "Grilled Chicken Salad", price: 28.99, image: "🥗", orders: 5 },
-        // { id: 2, name: "Pasta Carbonara", price: 24.50, image: "🍝", orders: 3 },
-        // { id: 3, name: "Beef Burger", price: 15.99, image: "🍔", orders: 4 },
-        // { id: 4, name: "Chocolate Cake", price: 12.50, image: "🍰", orders: 2 },
-    ]
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'Delivered': return 'badge-success';
-            case 'In Transit': return 'badge-info';
-            case 'Preparing': return 'badge-warning';
+            case 'Booked': return 'badge-success';
+            case 'Pending': return 'badge-info';
+            case 'Booking': return 'badge-loading';
             case 'Cancelled': return 'badge-error';
             default: return 'badge-neutral';
         }
@@ -82,10 +69,10 @@ const UserDashboard: React.FC = () => {
     return (
         <DashboardLayout>
             {/* Welcome Header */}
-            <div className="mb-8">
+            <div className="mb-8 mt-17 ml-">
                 <div className="bg-linear-to-r from-green-800 to-yellow-700 rounded-lg p-6 text-white">
                     <h1 className="text-3xl font-bold">Welcome back, Valued Customer! 👋</h1>
-                    <p className="mt-2 text-green-100">Dine with us 😊</p>
+                    <p className="mt-2 text-green-100">Drive with us <WavesIcon/> </p>
                 </div>
             </div>
 
@@ -105,7 +92,7 @@ const UserDashboard: React.FC = () => {
                         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 transform hover:scale-105 transition-transform duration-200">
                             <div className="flex items-center">
                                 <div className="flex-1">
-                                    <p className="text-gray-600 text-sm font-medium">My Orders</p>
+                                    <p className="text-gray-600 text-sm font-medium">My Bookings</p>
                                     <p className="text-2xl font-bold text-gray-900">{userStats?.totalBookings}</p>
                                     <p className="text-xs text-green-600">+2 this month</p>
                                 </div>
@@ -141,7 +128,7 @@ const UserDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 transform hover:scale-105 transition-transform duration-200">
+                        {/* <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 transform hover:scale-105 transition-transform duration-200">
                             <div className="flex items-center">
                                 <div className="flex-1">
                                     <p className="text-gray-600 text-sm font-medium">Favorite Items</p>
@@ -152,49 +139,49 @@ const UserDashboard: React.FC = () => {
                                     <Heart size={36} color="#21791b" strokeWidth={1.75} />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </>
                 )}
             </div>
             
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                {/* Recent Orders */}
+                {/* Recent Bookings */}
                 <div className="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-semibold text-gray-900">My Recent Orders</h2>
-                        <Link to="/dashboard/my-orders" className="btn btn-sm bg-green-800 hover:bg-green-900 text-white border-none">
-                            View All Orders
+                        <h2 className="text-xl font-semibold text-gray-900">My Recent Bookings</h2>
+                        <Link to="/dashboard/my-bookings" className="btn btn-sm bg-green-800 hover:bg-green-900 text-white border-none">
+                            View All Bookings
                         </Link>
                     </div>
                     <div className="space-y-4">
-                        {recentOrders.length === 0 ? (
+                        {recentbookings.length === 0 ? (
                             <div className="col-span-4 flex flex-col items-center justify-center py-10">
                                 <HardDriveDownload size={48} className="text-gray-300 mb-4" />
-                                <p className="text-gray-600">You have no recent orders. Start exploring our menu!</p>
+                                <p className="text-gray-600">You have no recent bookings. Start exploring our vehicles!</p>
                             </div>
-                        ) : (recentOrders.map((order) => (
-                            <div key={order.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                        ) : (recentbookings.map((booking) => (
+                            <div key={booking.user_id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                                 <div className="flex items-center justify-between">
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-gray-900">{order.items}</h3>
-                                        <p className="text-sm text-gray-600">{order.restaurant} • {order.date}</p>
+                                        <h3 className="font-semibold text-gray-900">{booking.vehicle_id}</h3>
+                                        <p className="text-sm text-gray-600"> •{booking.booking_date.toLocaleDateString()}</p>
                                         <div className="flex items-center mt-2">
-                                            <span className={`badge ${getStatusColor(order.status)} text-white mr-3`}>
-                                                {order.status}
+                                            <span className={`badge ${getStatusColor(booking.booking_status)} text-white mr-3`}>
+                                                {booking.booking_status}
                                             </span>
-                                            {order.rating > 0 && (
+                                            {booking.rating > 0 && (
                                                 <div className="flex items-center">
-                                                    {renderStars(order.rating)}
+                                                    {renderStars(booking.rating)}
                                                 </div>
                                             )}
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-bold text-green-700">${order.amount}</p>
-                                        {order.status === 'Delivered' && order.rating === 0 && (
+                                        <p className="font-bold text-green-700">${booking.total_amount}</p>
+                                        {booking.booking_status === 'Delivered' && booking.rating === 0 && (
                                             <button className="btn btn-xs bg-yellow-500 hover:bg-yellow-600 text-white mt-2">
-                                                Rate Order
+                                                Rate Booking
                                             </button>
                                         )}
                                     </div>
@@ -208,14 +195,14 @@ const UserDashboard: React.FC = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
                     <div className="space-y-3">
-                        <button className="w-full btn bg-green-800 hover:bg-green-900 text-white border-none flex items-center justify-start p-4">
-                            <ShoppingCart className="w-5 h-5 mr-3" />
-                            Order Now
-                        </button>
-                        <button className="w-full btn bg-orange-400 hover:bg-orange-500 text-white border-none flex items-center justify-start p-4">
+                        <Link to="/vehicles" className="w-full btn bg-green-800 hover:bg-green-900 text-white border-none flex items-center justify-start p-4">
+                        Book Now
+                    </Link>
+                        
+                        {/* <button className="w-full btn bg-orange-400 hover:bg-orange-500 text-white border-none flex items-center justify-start p-4">
                             <Heart className="w-5 h-5 mr-3" />
                             View Favorites
-                        </button>
+                        </button> */}
                         <button className="w-full btn bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center justify-start p-4">
                             <Star className="w-5 h-5 mr-3" />
                             Loyalty Rewards
@@ -237,11 +224,11 @@ const UserDashboard: React.FC = () => {
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {favoriteItems.length === 0 ? (
+                    {/* {favoriteItems.length === 0 ? (
                         // Display a message when there are no favorite items with a lucide icon  align items center
                         <div className="col-span-4 flex flex-col items-center justify-center py-10">
                             <Heart size={48} className="text-gray-300 mb-4" />
-                            <p className="text-gray-600">You have no favorite items yet. Start exploring our menu!</p>
+                            <p className="text-gray-600">You have no favorite vehicles yet. Start exploring our vehicles page!</p>
                         </div>
                     ) : (
                         favoriteItems.map((item) => (
@@ -250,13 +237,13 @@ const UserDashboard: React.FC = () => {
                                     <div className="text-4xl mb-2">{item.image}</div>
                                     <h3 className="font-semibold text-gray-900 text-sm mb-1">{item.name}</h3>
                                     <p className="text-green-700 font-bold">${item.price}</p>
-                                    <p className="text-xs text-gray-500 mb-3">Ordered {item.orders} times</p>
+                                    <p className="text-xs text-gray-500 mb-3">Booked {item.Booked} times</p>
                                     <button className="btn btn-xs bg-green-800 hover:bg-green-900 text-white w-full">
-                                        Order Again
+                                        Book Again
                                     </button>
                                 </div>
                             </div>
-                        )))}
+                        )))} */}
                 </div>
             </div>
         </DashboardLayout>

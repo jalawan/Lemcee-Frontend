@@ -1,4 +1,4 @@
-import { BarChart, Clipboard, ShoppingCart, StoreIcon, Users } from 'lucide-react'
+import { BarChart, Car, Clipboard, NotebookIcon, ShoppingCart, StoreIcon, Ticket, Users } from 'lucide-react'
 import React from 'react'
 import { Link, useLocation } from 'react-router'
 
@@ -14,29 +14,46 @@ const AdminSidebar: React.FC = () => {
             icon: <BarChart  />
         },
         {
-            name: 'All Orders',
-            path: '/admin/dashboard/all-orders',
+            name: 'All Bookings',
+            path: '/admin/dashboard/all-bookings',
             icon: <ShoppingCart  />
         },
         {
-            name: 'Menu Items',
-            path: '/admin/dashboard/all-menu-items',
-            icon: <Clipboard  />
+            name: 'Add Vehicles',
+            path: '/admin/vehicles',
+            icon: <Car  />,
         },
         {
-            name: 'All Customers',
+            name: 'All Users',
             path: '/admin/dashboard/all-customers',
             icon: <Users  />
         },
+    
         {
-            name:'All Restaurants',
-            path: '/admin/dashboard/all-restaurants',
-            icon: <StoreIcon />
-        }
+            name: 'Add VehicleSpec',
+            path: '/admin/VehicleSpec',
+            icon: <Car />
+        },
+        {
+            name: 'All My Vehicles',
+            path: '/admin/dashboard/vehicles',
+            icon: < Car />
+        },
+        {
+            name: 'All Payments',
+            path: '/payments',
+            icon: < NotebookIcon />
+        },
+        {
+            name: 'All Support Tickets',
+            path: '/admin/support-tickets',
+            icon: < Ticket/>
+        },
+        
     ]
 
     return (
-        <div className="bg-white border-r border-gray-200 shadow-sm transition-all duration-300 w-64 min-h-screen fixed left-0 top-23 z-40">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-zinc-900 to-black shadow-sm transition-all duration-300 w-64 min-h-screen fixed left-0 top-23 z-40">
             {/* Sidebar Header */}
             <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between">

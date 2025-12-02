@@ -14,13 +14,18 @@ const Sidebar: React.FC = () => {
             icon: <LayoutDashboardIcon className="w-5 h-5" />
         },
         {
-            name: 'My Orders',
-            path: '/dashboard/my-orders',
+            name: 'My Bookings',
+            path: '/dashboard/my-Bookings',
             icon: <ShoppingBag className="w-5 h-5" />
         },
         {
             name: 'My Profile',
             path: '/dashboard/user-profile',
+            icon: <User className="w-5 h-5" />
+        },
+        {
+            name: 'My Support Tickets',
+            path: '/user/support-tickets',
             icon: <User className="w-5 h-5" />
         }
     ]

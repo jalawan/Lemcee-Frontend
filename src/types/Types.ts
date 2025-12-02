@@ -42,27 +42,65 @@ export interface Bookings{
     booking_date:string;
     return_date :string;
     total_amount :number;
-    booking_status :string;
+    booking_status :'pending' | 'paid' | 'Failed'|'confirmed' ;
     created_at:number
 }
-export interface RecentBookings {
-    id: number;
-    user: string;
-    amount: number;
-    status: 'Delivered' | 'Preparing' | 'Ready' | 'Cancelled';
-    time: string;
+export interface RecentBookings{
+    user_id:number;
+    vehicle_id:number;
+    booking_date:Date;
+    return_date:Date;
+    total_amount:number;
+    booking_status :string;
+    rating:number;
+    created_at:number
+    
 }
 
-export interface User{
-    role: string;
+export interface Payments {
+  payment_id: number;
+  booking_id: number;
+  amount: number;
+  payment_status: string;
+  payment_date: string;
+  payment_method: string;
+  transaction_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+
+export interface Users{
     user_id:number;
     first_name:string;
     last_name:string;
     email:string;
+    password:string;
     contact_phone:string;
+    address:string;
+    role: string;
     created_at:string;
-    user_type:string
+    
 }
+export interface SupportTicketUser_id {
+  user_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+export interface SupportTicketResponse {
+  ticket_id: string;
+  subject: string;
+  description: string;
+  status: string;
+  admin_reply?: string | null;
+  booking_id?: number | null;
+  created_at: Date;
+  updated_at: Date;
+  user_id?: SupportTicketUser_id | null;
+}
+
 
 export interface DashboardStats {
     totalBookings: number;
@@ -73,7 +111,7 @@ export interface DashboardStats {
 export interface AdminDashboardStats {
     totalBookings: number;
     totalRevenue: number;
-    totalCustomers: number;
+    totalUsers: number;
     totalVehicles: number;
 }
 
@@ -85,3 +123,5 @@ export interface UserStats {
 }
 
 
+// status: 'Open' | 'Resolved' | 'Closed';
+//   created_at: string;

@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     try {
       const response = await loginUser(data).unwrap();
       dispatch(setCredentials({ token: response.token, user: response.user }));
-       if (response.user.user_type=== "admin") {
+       if (response.user.role=== "admin") {
           navigate('/admin/dashboard');
         } else {
           navigate('/dashboard'); 

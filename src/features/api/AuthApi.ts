@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { apiDomain } from '../../apiDomain/ApiDomain';
-import type { User, UserFormValues } from '../../types/Types';
+import type { Users, UserFormValues } from '../../types/Types';
 
 export const AuthApi = createApi({
     reducerPath: 'authApi',
@@ -8,7 +8,7 @@ export const AuthApi = createApi({
     endpoints: (builder) => ({
 
         // User Login
-        login: builder.mutation<{ token: string; user: User}, Partial<Omit<UserFormValues,'first_name'>>>({
+        login: builder.mutation<{ token: string; user: Users}, Partial<Omit<UserFormValues,'first_name'>>>({
             query: (credentials) => ({
                 url: '/auth/login',
                 method: 'POST',

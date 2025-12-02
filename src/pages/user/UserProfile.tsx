@@ -154,7 +154,7 @@ const UserProfile: React.FC = () => {
                             <p className="text-gray-600 mb-2">{user.email}</p>
                             <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
                                 <Shield size={14} className="mr-1" />
-                                {user.user_type?.toUpperCase()}
+                                {user.role?.toUpperCase()}
                             </div>
                         </div>
                     </div>
