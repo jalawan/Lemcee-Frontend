@@ -16,13 +16,21 @@ export interface SupportTicketCreateDto {
 export interface SupportTicketResponse {
   ticket_id: number;
   user_id: number;
-  booking_id?: number | null;
   subject: string;
   description: string;
   admin_reply?: string | null;
   status: string |null;
   created_at: string;
   updated_at: string;
+booking_id: {
+    booking_id: number,
+    vehicle_id: {
+      vehicle_id: number,
+      vehicle_spec_id: number,
+      manufacturer:string,
+      model: string
+    }
+  }
   // optionally, joined user details if your backend returns them
   user?: {
     user_id: number;

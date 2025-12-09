@@ -22,6 +22,8 @@ import AddVehicleSpecification from './pages/admin/AddSpecifiication'
 import Payments from './pages/user/Payments'
 import UserSupportTickets from './pages/user/UserSupportTickets'
 import AllSupportTickets from './pages/admin/AllSupportTickets';
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 
 import { useSelector } from 'react-redux'
@@ -44,6 +46,13 @@ function App() {
       path: '/vehicle_spec/:vehicle_id',
       element: <VehicleSpecification />,
     },
+    {
+      path:'/forgot-password',element:<ForgotPassword/>
+    },
+    {
+      path:'/reset-password',element:<ResetPassword/>
+    },
+
 
     //  USER DASHBOARD 
     {
@@ -100,7 +109,7 @@ function App() {
         ),
     },
     {
-      path: '/admin/dashboard/all-customers',
+      path: '/admin/dashboard/all-users',
       element:
         isAuthenticated && user?.role === 'admin' ? (
           <AllCustomers />

@@ -1,8 +1,8 @@
 import React from 'react'
 import DashboardLayout from '../../dashboardDesign/DashboardLayout'
-import { DollarSign, HardDriveDownload, ShoppingCart, Star, User, WavesIcon } from 'lucide-react'
+import { DollarSign, HardDriveDownload, ShoppingCart, Star, User, WavesIcon ,Heart } from 'lucide-react'
 import { Link } from 'react-router'
-//import type { FavoriteItems } from '../../types/Types';
+import type { FavoriteItems } from '../../types/Types';
 import { dashboardDataApi } from '../../features/api/DashboardDataApi';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
@@ -44,10 +44,10 @@ const UserDashboard: React.FC = () => {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'Booked': return 'badge-success';
-            case 'Pending': return 'badge-info';
-            case 'Booking': return 'badge-loading';
-            case 'Cancelled': return 'badge-error';
+            case 'paid': return 'badge-success';
+            case 'pending': return 'badge-info';
+            case '': return 'badge-loading';
+            case 'Failed': return 'badge-error';
             default: return 'badge-neutral';
         }
     }

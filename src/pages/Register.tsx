@@ -1,10 +1,11 @@
-import React from "react";
+import React ,{useState} from "react";
 import { Link, useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { AuthApi } from "../features/api/AuthApi";
 import { Toaster, toast } from "sonner";
+import { EyeClosedIcon } from "lucide-react";
 
 type RegisterFormValues = {
   first_name: string;
@@ -13,12 +14,17 @@ type RegisterFormValues = {
   contact_phone: number;
   password: string;
   address:string;
+  terms:boolean;
 };
 
 const Register: React.FC = () => {
   const [registerUser, { isLoading }] = AuthApi.useRegisterMutation();
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>();
+  const { register, handleSubmit,watch, formState: { errors } } = useForm<RegisterFormValues>();
   const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+
+  
+  const termsAccepted = watch("terms");
 
   const handleSubmitForm: SubmitHandler<RegisterFormValues> = async (data) => {
     try {
@@ -111,20 +117,41 @@ const Register: React.FC = () => {
 
                  
 
+                  
                   {/* Password */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                    <input
-                      {...register("password", {
-                        required: "Password required",
-                        minLength: { value: 5, message: "Password must have at least 5 characters" }
-                      })}
-                      type="password"
-                      placeholder="••••••••"
-                      className="w-full px-5 py-3 rounded-xl border border-gray-300 bg-gray-50 focus:bg-white shadow-inner focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
-                    />
-                    {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Password
+                    </label>
+
+                    <div className="relative">
+                      <input
+                        {...register('password', {
+                          required: "Password is required",
+                          minLength: { value: 6, message: "Password must be at least 6 characters" }
+                        })}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        className="w-full px-5 py-3 pr-14 rounded-xl border border-gray-300 bg-gray-50 focus:bg-white shadow-inner focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                      />
+
+                      {/* Show/Hide Button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-amber-600 hover:text-amber-700"
+                      >
+                        <EyeClosedIcon/>
+                      </button>
+                    </div>
+
+                    {errors.password && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </div>
+
                    {/* Phone Number */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1">contact_phone</label>
@@ -154,9 +181,34 @@ const Register: React.FC = () => {
                     {errors.address && <p className="text-sm text-red-600 mt-1">{errors.address.message}</p>}
                   </div>
 
+                  {/* Terms & Conditions */}
+                  <div className="flex flex-col gap-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        {...register("terms", {
+                          required: "You must agree to the terms and conditions"
+                        })}
+                        className="checkbox checkbox-amber-500"
+                      />
+                      <span className="text-sm text-gray-700">
+                        I agree to the{" "}
+                        <Link to="/terms" className="text-amber-600 font-semibold hover:underline">
+                          Terms & Conditions
+                        </Link>
+                      </span>
+                    </label>
+
+                    {errors.terms && (
+                      <p className="text-sm text-red-600">{errors.terms.message}</p>
+                    )}
+                  </div>
+
+
                   {/* Submit Button */}
                   <button
                     type="submit"
+                    disabled={!termsAccepted}
                     className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg shadow-[0_10px_30px_rgba(245,158,11,0.45)] transition transform hover:scale-[1.02]"
                   >
                     {isLoading ? "Creating account..." : "Create Account"}

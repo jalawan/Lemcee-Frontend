@@ -1,20 +1,35 @@
-import React from 'react'
-import AdminDashboardLayout from '../../dashboardDesign/AdminDashboardLayout'
-import { Package } from 'lucide-react'
-import { BookingApi } from '../../features/api/BookingApi'
-import { toast } from 'sonner'
+import React, { useState } from 'react';
+import AdminDashboardLayout from '../../dashboardDesign/AdminDashboardLayout';
+import { Package } from 'lucide-react';
+import { BookingApi } from '../../features/api/BookingApi';
+import { PaymentsApi } from '../../features/api/PaymentsApi';
+import { toast } from 'sonner';
+import BookingDetailsModal from '../../components/BookingDetailsModal';
+import { StatusDot } from '../../utils/statusDot';
+import { userApi } from '../../features/api/UserApi';
 
 const AllBookings: React.FC = () => {
-  // ✅ RTK Query Hooks
-  const {data: allBookings,isLoading,isError,error,} = BookingApi.useGetAllBookingsQuery()
+  const {
+    data: allBookings,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = BookingApi.useGetAllBookingsQuery();
 
-  const [updateBooking, { isLoading: isUpdating }] =BookingApi.useUpdateBookingMutation()
+  const [deleteBooking, { isLoading: isDeleting }] =
+    BookingApi.useDeleteBookingMutation();
 
-  const [deleteBooking, { isLoading: isDeleting }] =BookingApi.useDeleteBookingMutation()
+  const [confirmPayment, { isLoading: isUpdating }] =
+    PaymentsApi.useConfirmPaymentMutation();
+
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+
+  const [banUser] = userApi.useBanUserMutation();
+  const [unbanUser] = userApi.useUnbanUserMutation();
 
   return (
     <AdminDashboardLayout>
-      {/* ✅ HEADER */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-green-100 rounded-lg">
           <Package className="text-green-600" size={24} />
@@ -24,17 +39,6 @@ const AllBookings: React.FC = () => {
         </h1>
       </div>
 
-      {/* ✅ SUMMARY CARD */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">
-          All Customer Bookings
-        </h3>
-        <p className="text-gray-500">
-          Admin panel for confirming payments and managing bookings
-        </p>
-      </div>
-
-      {/* ✅ BOOKINGS TABLE */}
       <div className="bg-white rounded-lg shadow-md p-6">
         {isLoading ? (
           <div className="text-center py-10">
@@ -60,9 +64,9 @@ const AllBookings: React.FC = () => {
                   <th>Booking ID</th>
                   <th>User ID</th>
                   <th>Amount</th>
-                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Is Active</th>
                   <th>Date</th>
-                   <th>Status</th>
                   <th className="text-center">Actions</th>
                 </tr>
               </thead>
@@ -73,15 +77,13 @@ const AllBookings: React.FC = () => {
                     <td>{booking.booking_id}</td>
                     <td>{booking.user_id}</td>
                     <td>Ksh. {booking.total_amount.toFixed(2)}</td>
-                   
 
-                    {/* ✅ STATUS BADGE */}
                     <td>
                       <span
                         className={`badge ${
                           booking.booking_status === 'pending'
                             ? 'badge-warning'
-                            : booking.booking_status === 'Booked'
+                            : booking.booking_status === 'confirmed'
                             ? 'badge-success'
                             : 'badge-error'
                         }`}
@@ -91,12 +93,13 @@ const AllBookings: React.FC = () => {
                     </td>
 
                     <td>
-                      {new Date(
-                        booking.created_at
-                      ).toLocaleString()}
+                      <StatusDot booking={booking} />
                     </td>
 
-                    {/* ✅ ACTION BUTTONS */}
+                    <td>
+                      {new Date(booking.created_at).toLocaleString()}
+                    </td>
+
                     <td className="flex gap-2 justify-center">
                       {/* ✅ CONFIRM PAYMENT */}
                       <button
@@ -106,32 +109,32 @@ const AllBookings: React.FC = () => {
                           booking.booking_status !== 'pending'
                         }
                         onClick={async () => {
-                          const confirmPayment = confirm(
-                            'Confirm customer payment?'
-                          )
-                          if (!confirmPayment) return
+                          const payment_id =
+                            booking.payments?.[0]?.payment_id;
+
+                          if (!payment_id)
+                            return toast.error('No payment found');
 
                           try {
-                            await updateBooking({
-                              booking_id:
-                                booking.booking_id,
-                              status: 'booked',
-                            }).unwrap()
+                            await confirmPayment({
+                              payment_id,
+                              payment_status: 'Completed',
+                            }).unwrap();
 
                             toast.success(
-                              '✅ Payment confirmed. Booking is now BOOKED.'
-                            )
+                              '✅ Payment confirmed and user notified!'
+                            );
+
+                            refetch();
                           } catch (err: any) {
-                            console.error(err)
                             toast.error(
                               err?.data?.message ||
                                 '❌ Failed to confirm payment'
-                            )
+                            );
                           }
                         }}
                       >
-                        {booking.booking_status ===
-                        'pending'
+                        {booking.booking_status === 'pending'
                           ? 'Confirm'
                           : 'Booked'}
                       </button>
@@ -141,30 +144,41 @@ const AllBookings: React.FC = () => {
                         className="btn btn-sm btn-error"
                         disabled={isDeleting}
                         onClick={async () => {
-                          const confirmDelete = confirm(
-                            'Are you sure you want to delete this booking?'
+                          if (
+                            !confirm(
+                              'Are you sure you want to delete this booking?'
+                            )
                           )
-                          if (!confirmDelete) return
+                            return;
 
                           try {
                             await deleteBooking({
-                              booking_id:
-                                booking.booking_id,
-                            }).unwrap()
+                              booking_id: booking.booking_id,
+                            }).unwrap();
 
                             toast.success(
                               '🗑️ Booking deleted successfully'
-                            )
+                            );
+
+                            refetch();
                           } catch (err: any) {
-                            console.error(err)
+                            console.error(err);
                             toast.error(
                               err?.data?.message ||
                                 '❌ Failed to delete booking'
-                            )
+                            );
                           }
                         }}
                       >
                         Delete
+                      </button>
+
+                      {/* ✅ VIEW DETAILS */}
+                      <button
+                        className="btn btn-sm btn-outline"
+                        onClick={() => setSelectedBooking(booking)}
+                      >
+                        View Details
                       </button>
                     </td>
                   </tr>
@@ -174,8 +188,50 @@ const AllBookings: React.FC = () => {
           </div>
         )}
       </div>
-    </AdminDashboardLayout>
-  )
-}
 
-export default AllBookings
+      {/* ✅ MODAL */}
+      {selectedBooking && (
+        <BookingDetailsModal
+          booking={selectedBooking}
+          user={selectedBooking.user}
+          vehicle={selectedBooking.vehicle}
+          onClose={() => setSelectedBooking(null)}
+          onBanUser={async () => {
+            const user_id = selectedBooking?.user?.user_id;
+
+            if (!user_id) return toast.error('User ID missing');
+
+            if (!confirm('🚫 Do you want to BAN this user?')) return;
+
+            try {
+              await banUser({ user_id }).unwrap();
+              toast.success('🚫 User banned successfully');
+              setSelectedBooking(null);
+              refetch();
+            } catch (err: any) {
+              toast.error(err?.data?.message || '❌ Ban failed');
+            }
+          }}
+          onUnbanUser={async () => {
+            const user_id = selectedBooking?.user?.user_id;
+
+            if (!user_id) return toast.error('User ID missing');
+
+            if (!confirm('✅ Do you want to UNBAN this user?')) return;
+
+            try {
+              await unbanUser({ user_id }).unwrap();
+              toast.success('✅ User unbanned successfully');
+              setSelectedBooking(null);
+              refetch();
+            } catch (err: any) {
+              toast.error(err?.data?.message || '❌ Unban failed');
+            }
+          }}
+        />
+      )}
+    </AdminDashboardLayout>
+  );
+};
+
+export default AllBookings;

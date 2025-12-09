@@ -15,6 +15,8 @@ const AdminSupportTickets: React.FC = () => {
   const [status, setStatus] = useState("Pending");
 
   const handleUpdate = async () => {
+    if (!selectedTicket) return;
+
     try {
       await updateTicket({
         ticket_id: selectedTicket.ticket_id,
@@ -68,7 +70,8 @@ const AdminSupportTickets: React.FC = () => {
               <tr>
                 <th>#</th>
                 <th>User</th>
-                <th>Booking</th>
+                <th>Email</th>
+                <th>Vehicle</th>
                 <th>Subject</th>
                 <th>Status</th>
                 <th>Date</th>
@@ -80,10 +83,23 @@ const AdminSupportTickets: React.FC = () => {
               {tickets?.map((t: any) => (
                 <tr key={t.ticket_id}>
                   <td>#{t.ticket_id}</td>
-                  <td>#{t.user_id.first_name}{t.user_id.last_name}</td>
-                  <td>{t.user_id.email}</td> 
-                  <td>#{t.booking_id}</td>
+
+                  {/* ✅ USER NAME FIXED */}
+                  <td>
+                    {t.user_id?.first_name} {t.user_id?.last_name}
+                  </td>
+
+                  <td>{t.user_id?.email}</td>
+
+                  {/* ✅ VEHICLE SAFE DISPLAY */}
+                  <td>
+                    {t.booking_id?.vehicle_id
+                      ? `${t.booking_id.vehicle_id.manufacturer} ${t.booking_id.vehicle_id.model}`
+                      : "No Vehicle"}
+                  </td>
+
                   <td>{t.subject}</td>
+
                   <td>
                     <span
                       className={`px-2 py-1 rounded text-xs ${getStatusColor(
@@ -93,7 +109,9 @@ const AdminSupportTickets: React.FC = () => {
                       {t.status}
                     </span>
                   </td>
+
                   <td>{new Date(t.created_at).toLocaleString()}</td>
+
                   <td className="flex gap-2">
                     <button
                       className="btn btn-xs btn-outline"
@@ -105,6 +123,7 @@ const AdminSupportTickets: React.FC = () => {
                     >
                       View
                     </button>
+
                     <button
                       className="btn btn-xs btn-error"
                       onClick={() => handleDelete(t.ticket_id)}
@@ -119,7 +138,7 @@ const AdminSupportTickets: React.FC = () => {
         )}
       </div>
 
-      {/* VIEW & REPLY MODAL */}
+      {/* ✅ VIEW & REPLY MODAL */}
       {selectedTicket && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-5 rounded shadow-lg w-[500px]">
@@ -127,9 +146,28 @@ const AdminSupportTickets: React.FC = () => {
               Ticket #{selectedTicket.ticket_id}
             </h2>
 
-            <p><b>User:</b> #{selectedTicket.user_id.first_name.last_name }</p>
-            <p><b>Booking:</b> #{selectedTicket.booking_id}</p>
-            <p><b>Subject:</b> {selectedTicket.subject}</p>
+            {/* ✅ USER FIXED */}
+            <p>
+              <b>User:</b>{" "}
+              {selectedTicket.user_id?.first_name}{" "}
+              {selectedTicket.user_id?.last_name}
+            </p>
+
+            <p>
+              <b>Email:</b> {selectedTicket.user_id?.email}
+            </p>
+
+            {/* ✅ VEHICLE FIXED */}
+            <p>
+              <b>Vehicle:</b>{" "}
+              {selectedTicket.booking_id?.vehicle_id
+                ? `${selectedTicket.booking_id.vehicle_id.manufacturer} ${selectedTicket.booking_id.vehicle_id.model}`
+                : "No Vehicle Assigned"}
+            </p>
+
+            <p>
+              <b>Subject:</b> {selectedTicket.subject}
+            </p>
 
             <div className="border p-2 mt-2 rounded bg-gray-50">
               <b>Description</b>
@@ -162,6 +200,7 @@ const AdminSupportTickets: React.FC = () => {
               >
                 Close
               </button>
+
               <button
                 className="btn btn-sm bg-green-700 text-white"
                 onClick={handleUpdate}

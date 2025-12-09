@@ -58,6 +58,14 @@ export const VehicleApi = createApi({
       invalidatesTags: ['vehicle'],
     }),
 
+    filterVehicles: builder.query({
+  query: (params) => ({
+    url: "/vehicles/filter",
+    params
+  })
+}),
+
+
     // ================= VEHICLE SPECIFICATIONS =================
 
     getAllVehicleSpecs: builder.query<VehicleSpecifications[], void>({

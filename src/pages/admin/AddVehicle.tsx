@@ -2,6 +2,7 @@ import { useState } from 'react'
 import AdminDashboardLayout from '../../dashboardDesign/AdminDashboardLayout'
 import { toast, Toaster } from 'sonner'
 import { useAddvehicleMutation, useGetAllVehicleSpecsQuery } from '../../features/api/VehicleApi'
+import { Link ,useNavigate } from 'react-router'
 
 const AddVehicle = () => {
   const { data: specs = [] } = useGetAllVehicleSpecsQuery()
@@ -9,6 +10,7 @@ const AddVehicle = () => {
 
   const [vehicleSpecId, setVehicleSpecId] = useState('')
   const [rentalRate, setRentalRate] = useState('')
+  const navigate=useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,8 +43,9 @@ const AddVehicle = () => {
         onChange={(e) => setVehicleSpecId(e.target.value)}
         className="select select-bordered w-full"
         required
-        >
-        <option value="">Select Vehicle Specification</option>
+        ><Link to ="/admin/VehicleSpec">
+        <option value="">Select Vehicle Specification <br></br>Click here to Add Specification
+          </option></Link>
         {specs.length === 0 ? (
             <option disabled>Loading specs...</option>
         ) : (

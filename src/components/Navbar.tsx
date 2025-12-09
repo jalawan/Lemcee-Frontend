@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
       <div className="navbar-end" style={{ justifyContent: 'space-evenly' }}>
         {!isAuthenticated ? (
           <Link to="/register">
-            <button className="btn bg-black-100 hover:bg-black-900 text-white border-black-900 hover:border-black-900 px-6 py-2 font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+            <button className="btn bg-black-100 hover:bg-black-900 text-black border-black-900 hover:border-black-900 px-6 py-2 font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
               BOOK NOW
             </button>
           </Link>

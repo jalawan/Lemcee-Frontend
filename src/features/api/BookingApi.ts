@@ -68,5 +68,16 @@ export const BookingApi = createApi({
             providesTags: ['bookings'],
         }),
 
+    // cancel booking 
+        cancelBooking: builder.mutation<{ message: string }, { booking_id: number; status?: string }>({
+        query: ({ booking_id, ...cancelBooking }) => ({
+            url: `/payments/bookings/${booking_id}`,
+            method: 'PATCH',
+            body: cancelBooking,
+        }),
+        invalidatesTags: ['bookings'],
+        }),
+
+
     })
 })

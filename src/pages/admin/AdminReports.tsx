@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   LineChart,
   Line,
@@ -9,21 +10,21 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import AdminDashboardLayout from '../../dashboardDesign/AdminDashboardLayout'
-
-const vehicleBookings = [
-  { name: 'Range Rover', bookings: 45 },
-  { name: 'BMW X6', bookings: 30 },
-  { name: 'Mercedes GLE', bookings: 25 },
-  { name: 'Audi Q7', bookings: 20 },
-]
-
-const revenueData = [
-  { month: 'Jan', revenue: 450000 },
-  { month: 'Feb', revenue: 520000 },
-  { month: 'Mar', revenue: 610000 },
-]
+import ReportsApi from '../../features/api/ReportsApi'
 
 const AdminReports = () => {
+  // Fetch Most Booked Vehicles
+  const { data: vehicleBookings, isLoading: loadingVehicles } =
+    ReportsApi.useGetMostBookedVehiclesQuery()
+
+  // Fetch Monthly Revenue
+  const { data: revenueData, isLoading: loadingRevenue } =
+    ReportsApi.useGetMonthlyRevenueQuery()
+
+  // Provide defaults if hooks return undefined
+  const vehicles = vehicleBookings?.data?? []
+  const revenue = revenueData?.data ?? []
+
   return (
     <AdminDashboardLayout>
       <h1 className="text-2xl font-bold mb-6">Company Performance Reports</h1>
@@ -32,27 +33,45 @@ const AdminReports = () => {
         {/* MOST BOOKED VEHICLES */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-4">Most Booked Vehicles</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={vehicleBookings}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="bookings" />
-            </BarChart>
-          </ResponsiveContainer>
+
+          {loadingVehicles ? (
+            <p>Loading...</p>
+          ) : !vehicles.length ? (
+            <p>No vehicle bookings yet</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={vehicles.slice(0, 5)}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="bookings" fill="#f59e0b" />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         {/* MONTHLY REVENUE */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="font-semibold mb-4">Monthly Revenue</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenueData}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line dataKey="revenue" />
-            </LineChart>
-          </ResponsiveContainer>
+
+          {loadingRevenue ? (
+            <p>Loading...</p>
+          ) : !revenue.length ? (
+            <p>No revenue data yet</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={revenue}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip
+                  formatter={(value: number) =>
+                    `Ksh ${value.toLocaleString()}`
+                  }
+                />
+                <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </AdminDashboardLayout>

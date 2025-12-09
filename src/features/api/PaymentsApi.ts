@@ -15,17 +15,6 @@ export interface Payment {
   updated_at: string
 }
 
-// /* ✅ SUPPORT TICKET TYPE */
-// export interface SupportTicket {
-//   ticket_id: number
-//   user_id: number
-//   subject: string
-//   description: string
-//   status: string
-//   created_at: string
-//   updated_at: string
-// }
-
 export const PaymentsApi = createApi({
   reducerPath: 'PaymentsApi',
   baseQuery: fetchBaseQuery({
@@ -37,7 +26,7 @@ export const PaymentsApi = createApi({
   },
 }),
 
-  tagTypes: ['Payment', 'Ticket'],
+  tagTypes: ['Payment', 'Ticket','bookings'],
 
   endpoints: (builder) => ({
     /* ===================== PAYMENTS ===================== */
@@ -70,7 +59,19 @@ export const PaymentsApi = createApi({
       }),
       invalidatesTags: ['Payment'],
     }),
-    
+// confirms
+     confirmPayment: builder.mutation<
+     { message: string }, 
+     {payment_id:number ;payment_status:string}
+     >({
+      query: ({payment_id}) => ({
+        url: `/payments/${payment_id}/confirm`,
+        method: 'POST', // usually POST for confirm actions
+      }),
+      invalidatesTags: ['Payment'],
+    }),
+  
+
 
     // ✅ DELETE PAYMENT
     deletePayment: builder.mutation<
@@ -84,26 +85,16 @@ export const PaymentsApi = createApi({
       invalidatesTags: ['Payment'],
     }),
 
-    /* ===================== SUPPORT TICKETS ===================== */
+    //refund payment
+    refundPayment: builder.mutation<any, { payment_id: number; booking_id: number; amount:number }>({
+  query:({ payment_id, booking_id, amount })=> ({
+    url: "/payments/refund",
+    method: "POST",
+    body:{ payment_id, booking_id, amount }
+  }),
+  invalidatesTags: ["Payment", "Ticket" ,'bookings'],
+}),
 
-    // ✅ GET ALL TICKETS
-    // getAllTickets: builder.query<SupportTicket[], void>({
-    //   query: () => '/supportTickets',
-    //   providesTags: ['Ticket'],
-    // }),
-
-    // // ✅ CREATE TICKET
-    // addTicket: builder.mutation<
-    //   { message: string },
-    //   Partial<SupportTicket>
-    // >({
-    //   query: (ticket) => ({
-    //     url: '/supportTickets',
-    //     method: 'POST',
-    //     body: ticket,
-    //   }),
-    //   invalidatesTags: ['Ticket'],
-    // }),
   }),
 })
 

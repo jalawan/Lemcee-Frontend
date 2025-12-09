@@ -46,7 +46,7 @@ const AllCustomers: React.FC = () => {
                             <th>Email</th>
                             <th>Contact_phone</th>
                             <th>Date Joined</th>
-                            <th>User Type</th>
+                            <th>Role</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -70,14 +70,14 @@ const AllCustomers: React.FC = () => {
                                     <td>{cust.email}</td>
                                     <td>{cust.contact_phone}</td>
                                     <td>{new Date(cust.created_at).toLocaleDateString()}</td>
-                                    <td className="capitalize">{cust.role || cust.role || 'customer'}</td>
+                                    <td className="capitalize">{cust.role || cust.role || 'User'}</td>
                                     <td>
                                         <button className="btn btn-sm btn-primary mr-2">View</button>
                                         <button
                                             className="btn btn-sm btn-warning mr-2"
                                             disabled={isUpdatingType}
                                             onClick={async () => {
-                                                const newType = (cust.role === 'admin') ? 'customer' : 'admin'
+                                                const newType = (cust.role === 'admin') ? 'User' : 'admin' 
                                                 try {
                                                     await updateUserType({ user_id: cust.user_id, user_type: newType }).unwrap()
                                                     toast.success(`User type updated to ${newType}`)

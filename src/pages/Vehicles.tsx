@@ -16,9 +16,51 @@ const Vehicles: React.FC = () => {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.authSlice);
   const navigate = useNavigate();
 
+
+   // ✅ Filter States
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(20000);
+  const [fuelType, setFuelType] = useState("");
+  const [transmission, setTransmission] = useState("");
+  const [availableOnly, setAvailableOnly] = useState(false);
+  const [sort, setSort] = useState("");
+
+  
   const { data: vehicles, error, isLoading } = VehicleApi.useGetAllvehicleQuery();
   const [createBooking, { isLoading: isBookingLoading }] = BookingApi.useAddNewBookingStatusMutation();
 
+
+  // ✅ FRONTEND FILTERING (DO NOT REMOVE ANY EXISTING CODE)
+const filteredVehicles = useMemo(() => {
+  if (!vehicles) return [];
+
+  return vehicles
+    .filter((v: any) => {
+      const priceMatch =
+        v.rental_rate >= minPrice && v.rental_rate <= maxPrice;
+
+      const fuelMatch =
+        !fuelType || v.fuel_type === fuelType;
+
+      const transmissionMatch =
+        !transmission || v.transmission === transmission;
+
+      const availabilityMatch =
+        !availableOnly || v.availability === true;
+
+      return (
+        priceMatch &&
+        fuelMatch &&
+        transmissionMatch &&
+        availabilityMatch
+      );
+    })
+    .sort((a: any, b: any) => {
+      if (sort === "asc") return a.rental_rate - b.rental_rate;
+      if (sort === "desc") return b.rental_rate - a.rental_rate;
+      return 0;
+    });
+}, [vehicles, minPrice, maxPrice, fuelType, transmission, availableOnly, sort]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
 
@@ -102,11 +144,93 @@ const Vehicles: React.FC = () => {
       <Navbar />
       <Toaster richColors position="top-right" />
 
-      {/* Hero */}
+{/* Hero */}
       <div className="bg-black text-white py-16 text-center">
         <h1 className="text-5xl font-bold mb-4">🚘 Executive Vehicle Booking</h1>
         <p className="opacity-90">Luxury rentals & hotel transportation</p>
       </div>
+
+      {/* ✅ FILTER BAR */}
+<div className="bg-white shadow p-4 mx-10 mt-6 rounded-xl grid grid-cols-1 md:grid-cols-6 gap-4">
+
+ 
+          {/* ✅ Min Price */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Minimum Price</label>
+            <input
+              type="number"
+              placeholder="Enter min price"
+              value={minPrice}
+              onChange={(e) => setMinPrice(Number(e.target.value))}
+              className="input input-bordered"
+            />
+          </div>
+
+          {/* ✅ Max Price */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Maximum Price</label>
+            <input
+              type="number"
+              placeholder="Enter max price"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="input input-bordered"
+            />
+          </div>
+
+
+          {/* Fuel Type */}
+          <div className=" mt-6">
+          <select
+            value={fuelType}
+            onChange={(e) => setFuelType(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="">All Fuel</option>
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+         </div>
+          {/* Transmission */}
+          <div className=" mt-6">
+          <select
+            value={transmission}
+            onChange={(e) => setTransmission(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="">All Transmission</option>
+            <option value="Automatic">Automatic</option>
+            <option value="Manual">Manual</option>
+          </select>
+          </div>
+          {/* Sort */}
+
+          <div className=" mt-6">
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="">Sort By</option>
+            <option value="asc">Price Low → High</option>
+            <option value="desc">Price High → Low</option>
+          </select>
+          </div>
+
+          {/* Availability */}
+          {isAuthenticated &&(
+          <label className="flex items-center gap-2 text-sm font-semibold">
+            <input
+              type="checkbox"
+              checked={availableOnly}
+              onChange={(e) => setAvailableOnly(e.target.checked)}
+              className="checkbox checkbox-primary"
+            />
+            Available Only
+          </label>
+          )}
+        </div>
 
       {/* Vehicle Grid */}
       <div className="flex-1 p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -115,7 +239,7 @@ const Vehicles: React.FC = () => {
         ) : error ? (
           <p className="text-red-500">Error loading vehicles</p>
         ) : (
-          vehicles?.map((vehicle: any) => (
+          filteredVehicles?.map((vehicle: any) => (
             <div
               key={vehicle.vehicle_id}
               className="relative bg-white rounded-2xl shadow-xl hover:-translate-y-2 transition-all overflow-hidden"

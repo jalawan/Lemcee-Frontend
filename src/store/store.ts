@@ -9,6 +9,7 @@ import { VehicleApi } from '../features/api/VehicleApi';
 import {BookingApi}from '../features/api/BookingApi'
 import { PaymentsApi } from '../features/api/PaymentsApi';
 import SupportTicketApi from '../features/api/SupportTicketApi';
+import ReportsApi from '../features/api/ReportsApi';
 
 
 
@@ -41,6 +42,7 @@ export const store = configureStore({
         [BookingApi.reducerPath]:BookingApi.reducer,
         [PaymentsApi.reducerPath]:PaymentsApi.reducer,
         [SupportTicketApi.reducerPath]:SupportTicketApi.reducer,
+        [ ReportsApi.reducerPath]: ReportsApi.reducer,
 
         //add the auth slice reducer
         authSlice: persistedAuthReducer
@@ -53,7 +55,8 @@ export const store = configureStore({
             VehicleApi.middleware,
             BookingApi.middleware,
             PaymentsApi.middleware,
-            SupportTicketApi.middleware
+            SupportTicketApi.middleware,
+            ReportsApi.middleware
         ),
 })
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import AdminDashboardLayout from '../../dashboardDesign/AdminDashboardLayout'
 import { useNavigate } from 'react-router'
-import { Clipboard, DollarSign, ShoppingCart, Users, PlusCircle, BarChart3, Settings } from 'lucide-react'
+import { Clipboard, DollarSign, ShoppingCart, Users, PlusCircle, BarChart3, Settings, CarFront } from 'lucide-react'
 import { dashboardDataApi } from '../../features/api/DashboardDataApi'
 import { BookingApi } from '../../features/api/BookingApi'
 
@@ -12,18 +12,20 @@ const AdminDashboard: React.FC = () => {
 
   const navigate = useNavigate()
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Delivered':
-        return 'bg-emerald-500'
-      case 'Preparing':
-        return 'bg-amber-500'
-      case 'Ready':
-        return 'bg-cyan-500'
-      default:
-        return 'bg-zinc-500'
-    }
+ const getStatusColor = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'paid':
+      return 'bg-yellow-400 text-black';   // ✅ YELLOW for Paid
+    case 'confirmed':
+      return 'bg-emerald-500';
+    case 'Failed':
+      return 'bg-amber-500';
+    case 'pending':
+      return 'bg-cyan-500';
+    default:
+      return 'bg-zinc-600';
   }
+};
 
   return (
     <AdminDashboardLayout>
@@ -46,7 +48,7 @@ const AdminDashboard: React.FC = () => {
           {
             title: 'Total Bookings',
             value: dashboardData?.totalBookings,
-            icon: <ShoppingCart size={26} />,
+            icon: <Clipboard size={26} />,
             gradient: 'from-emerald-500 to-emerald-700',
           },
           {
@@ -65,7 +67,7 @@ const AdminDashboard: React.FC = () => {
           {
             title: 'Vehicles',
             value: dashboardData?.totalVehicles,
-            icon: <Clipboard size={26} />,
+            icon: <CarFront size={26} />,
             gradient: 'from-violet-500 to-violet-700',
           },
         ].map((card, idx) => (

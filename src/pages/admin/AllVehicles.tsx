@@ -100,22 +100,36 @@ const AllVehicles: React.FC = () => {
                                             {item.availability ? "Make Unavailable" : "Make Available"}
                                             </button>
 
+                                           {/*Inside your delete button click handler*/}
                                             <button
-                                                className="btn btn-sm btn-error"
-                                                disabled={isDeletingMenu}
-                                                onClick={async () => {
-                                                    if (!confirm('Delete this vehicle?')) return;
-                                                    try {
-                                                        await deleteVehicle(  item.vehicle_id ).unwrap();
-                                                        toast.success('Vehicle deleted');
-                                                    } catch (err: any) {
-                                                        console.error(err);
-                                                        toast.error('Failed to delete vehicle');
-                                                    }
-                                                }}
+                                            className="btn btn-sm btn-error"
+                                            onClick={async () => {
+                                                if (!confirm("Are you sure you want to delete this vehicle?")) return;
+
+                                                try {
+                                                // Pass the vehicle_id directly
+                                                const response: any = await deleteVehicle(item.vehicle_id).unwrap();
+
+                                                // Show success toast
+                                                toast.success(response.message || "🗑️ Vehicle deleted successfully");
+
+                                                } catch (err: any) {
+                                                console.error(err);
+
+                                                // Friendly message for foreign key constraint
+                                                if (err?.data?.message?.includes("REFERENCE constraint")) {
+                                                    toast.error("❌ Cannot delete vehicle: existing bookings found");
+                                                } else {
+                                                    toast.error(err?.data?.message || "❌ Failed to delete vehicle");
+                                                }
+                                                }
+                                            }}
                                             >
-                                                Delete
+                                            Delete
                                             </button>
+
+
+
                                         </td>
                                     </tr>
                                 ))}

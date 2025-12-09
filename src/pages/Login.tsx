@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{useState} from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from 'react-router';
@@ -7,6 +7,7 @@ import { AuthApi } from '../features/api/AuthApi';
 import { toast, Toaster } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../features/slice/authSlice';
+import { EyeClosed, EyeClosedIcon } from "lucide-react";
 
 type LoginFormValues = {
   email: string;
@@ -19,11 +20,20 @@ const Login: React.FC = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleLoginForm: SubmitHandler<LoginFormValues> = async (data) => {
     try {
       const response = await loginUser(data).unwrap();
-      dispatch(setCredentials({ token: response.token, user: response.user }));
+      dispatch(setCredentials({ 
+        token: response.token, 
+        user: {
+          ...response.user,
+          role: response.user.role as 'admin' | 'user'
+        } 
+      }));
+
        if (response.user.role=== "admin") {
           navigate('/admin/dashboard');
         } else {
@@ -83,25 +93,46 @@ const Login: React.FC = () => {
                   </div>
 
                   {/* Password */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                    <input
-                      {...register('password', {
-                        required: "Password is required",
-                        minLength: { value: 6, message: "Password must be at least 6 characters" }
-                      })}
-                      type="password"
-                      placeholder="••••••••"
-                      className="w-full px-5 py-3 rounded-xl border border-gray-300 bg-gray-50 focus:bg-white shadow-inner focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
-                    />
-                    {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
-                  </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Password
+                      </label>
+
+                      <div className="relative">
+                        <input
+                          {...register('password', {
+                            required: "Password is required",
+                            minLength: { value: 6, message: "Password must be at least 6 characters" }
+                          })}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          className="w-full px-5 py-3 pr-14 rounded-xl border border-gray-300 bg-gray-50 focus:bg-white shadow-inner focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                        />
+
+                        {/* Show/Hide Button */}
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-amber-600 hover:text-amber-700"
+                        >
+                          <EyeClosedIcon/>
+                        </button>
+                      </div>
+
+                      {errors.password && (
+                        <p className="text-sm text-red-600 mt-1">
+                          {errors.password.message}
+                        </p>
+                      )}
+                    </div>
+
 
                   {/* Forgot password */}
                   <div className="text-right">
-                    <Link to="#" className="text-amber-600 text-sm hover:underline font-medium">
+                    <Link to="/forgot-password" className="text-amber-600 text-sm hover:underline font-medium">
                       Forgot your password?
                     </Link>
+
                   </div>
 
                   {/* Submit Button */}

@@ -7,7 +7,8 @@ import { VehicleApi } from "../features/api/VehicleApi";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { toast } from "sonner";
-import type { VehicleSpecifications } from "../types/Types";
+import type { VehicleSpecifications} from "../types/Types";
+
 
 const VehicleSpecification: React.FC = () => {
   const params = useParams<{ vehicle_id: string }>();
@@ -49,7 +50,7 @@ const VehicleSpecification: React.FC = () => {
   if (error || !vehicle)
     return <p className="text-red-500 p-10">Vehicle not found</p>;
 
-  const v = vehicle as VehicleSpecifications;
+const v = VehicleSpecificationsSchema.parse(vehicle as unknown);
 
   return (
     <>

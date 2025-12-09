@@ -22,7 +22,7 @@ export interface VehicleSpecifications {
   vehicle_id: number;
   rental_rate: number;
   availability: boolean;
-  imageURL?: string;
+  imageURL?: "https://res.cloudinary.com/dwkwtexgk/image/upload/v1765182047/eiivenujhr33d9sui8ov.jpg;"
 }
 
 
@@ -41,9 +41,11 @@ export interface Bookings{
     location_id:number;
     booking_date:string;
     return_date :string;
+    rental_rate:number;
     total_amount :number;
     booking_status :'pending' | 'paid' | 'Failed'|'confirmed' ;
-    created_at:number
+    created_at:number,
+    payments?:Payments [];
 }
 export interface RecentBookings{
     user_id:number;
@@ -70,7 +72,7 @@ export interface Payments {
 }
 
 
-export interface Users{
+export interface User{
     user_id:number;
     first_name:string;
     last_name:string;
@@ -105,7 +107,7 @@ export interface SupportTicketResponse {
 export interface DashboardStats {
     totalBookings: number;
     totalRevenue: number;
-    totalCustomers: number;
+    totalUsers: number;
     totalVehicles: number;
 }
 export interface AdminDashboardStats {
@@ -117,7 +119,7 @@ export interface AdminDashboardStats {
 
 export interface UserStats {
     totalBookings: number;
-    favoriteItems: number;
+    favoriteVehicles: number;
     totalSpent: number;
     loyaltyPoints: number;
 }
